@@ -1,19 +1,4 @@
-"""
-Transforms and data augmentation for sequence level images, bboxes and masks.
-"""
-import random
 
-import PIL
-import torch
-import torchvision.transforms as T
-import torchvision.transforms.functional as F
-
-from util.box_ops import box_xyxy_to_cxcywh, box_iou
-from util.misc import interpolate
-import numpy as np
-from numpy import random as rand
-from PIL import Image
-import cv2
 
 def bbox_overlaps(bboxes1, bboxes2, mode='iou', eps=1e-6):
     assert mode in ['iou', 'iof']

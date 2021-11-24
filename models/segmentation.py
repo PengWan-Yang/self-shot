@@ -1,7 +1,3 @@
-"""
-Instance Sequence Segmentation 
-Modified from DETR (https://github.com/facebookresearch/detr)
-"""
 import io
 from collections import defaultdict
 from typing import List, Optional
@@ -57,16 +53,16 @@ class BasicBlock(nn.Module):
 
 
 
-class VisTRsegm(nn.Module):
-    def __init__(self, vistr, freeze_vistr=False):
+class cvprsegm(nn.Module):
+    def __init__(self, cvpr, freeze_cvpr=False):
         super().__init__()
-        self.vistr = vistr
+        self.cvpr = cvpr
 
-        if freeze_vistr:
+        if freeze_cvpr:
             for p in self.parameters():
                 p.requires_grad_(False)
 
-        hidden_dim, nheads = vistr.transformer.d_model, vistr.transformer.nhead
+        hidden_dim, nheads = cvpr.transformer.d_model, cvpr.transformer.nhead
         self.bbox_attention = MHAttentionMap(hidden_dim, hidden_dim, nheads, dropout=0.0)
         self.mask_head = MaskHeadSmallConv(hidden_dim + nheads, [1024, 512, 256], hidden_dim)
         self.insmask_head = nn.Sequential(
@@ -83,30 +79,30 @@ class VisTRsegm(nn.Module):
     def forward(self, samples: NestedTensor):
         if not isinstance(samples, NestedTensor):
             samples = nested_tensor_from_tensor_list(samples)
-        features, pos = self.vistr.backbone(samples)
+        features, pos = self.cvpr.backbone(samples)
         bs = features[-1].tensors.shape[0]
         src, mask = features[-1].decompose()
         assert mask is not None
-        src_proj = self.vistr.input_proj(src)
+        src_proj = self.cvpr.input_proj(src)
         n,c,s_h,s_w = src_proj.shape
-        bs_f = bs//self.vistr.num_frames
-        src_proj = src_proj.reshape(bs_f, self.vistr.num_frames,c, s_h, s_w).permute(0,2,1,3,4).flatten(-2)
-        mask = mask.reshape(bs_f, self.vistr.num_frames, s_h*s_w)
+        bs_f = bs//self.cvpr.num_frames
+        src_proj = src_proj.reshape(bs_f, self.cvpr.num_frames,c, s_h, s_w).permute(0,2,1,3,4).flatten(-2)
+        mask = mask.reshape(bs_f, self.cvpr.num_frames, s_h*s_w)
         pos = pos[-1].permute(0,2,1,3,4).flatten(-2)
-        hs, memory = self.vistr.transformer(src_proj, mask, self.vistr.query_embed.weight, pos)
-        outputs_class = self.vistr.class_embed(hs)
-        outputs_coord = self.vistr.bbox_embed(hs).sigmoid()
+        hs, memory = self.cvpr.transformer(src_proj, mask, self.cvpr.query_embed.weight, pos)
+        outputs_class = self.cvpr.class_embed(hs)
+        outputs_coord = self.cvpr.bbox_embed(hs).sigmoid()
         out = {"pred_logits": outputs_class[-1], "pred_boxes": outputs_coord[-1]}
-        if self.vistr.aux_loss:
-            out['aux_outputs'] = self.vistr._set_aux_loss(outputs_class, outputs_coord)
+        if self.cvpr.aux_loss:
+            out['aux_outputs'] = self.cvpr._set_aux_loss(outputs_class, outputs_coord)
         for i in range(3):
             _,c_f,h,w = features[i].tensors.shape
-            features[i].tensors = features[i].tensors.reshape(bs_f, self.vistr.num_frames, c_f, h,w)
-        n_f = self.vistr.num_queries//self.vistr.num_frames
+            features[i].tensors = features[i].tensors.reshape(bs_f, self.cvpr.num_frames, c_f, h,w)
+        n_f = self.cvpr.num_queries//self.cvpr.num_frames
         outputs_seg_masks = []
         
         # image level processing using box attention
-        for i in range(self.vistr.num_frames):
+        for i in range(self.cvpr.num_frames):
             hs_f = hs[-1][:,i*n_f:(i+1)*n_f,:]
             memory_f = memory[:,:,i,:].reshape(bs_f, c, s_h,s_w)
             mask_f = mask[:,i,:].reshape(bs_f, s_h,s_w)

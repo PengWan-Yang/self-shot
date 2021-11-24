@@ -1,7 +1,3 @@
-"""
-Instance Sequence Matching
-Modified from DETR (https://github.com/facebookresearch/detr)
-"""
 import torch
 from scipy.optimize import linear_sum_assignment
 from torch import nn

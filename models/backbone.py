@@ -1,7 +1,3 @@
-"""
-Backbone modules.
-Modified from DETR (https://github.com/facebookresearch/detr)
-"""
 from collections import OrderedDict
 
 import torch
@@ -97,16 +93,22 @@ class Joiner(nn.Sequential):
     def __init__(self, backbone, position_embedding):
         super().__init__(backbone, position_embedding)
 
-    def forward(self, tensor_list: NestedTensor):
+    def forward(self, tensor_list: NestedTensor, supports, shot):
         xs = self[0](tensor_list)
+        if shot > 0:
+            B, S, C, T, H, W = supports.shape
+            features_support = self[0].body(supports.view(-1, C, T, H, W))
+            _, C, T, H, W = features_support.shape
+            _features_support = features_support.view(B, S, C, T, H, W)
+        else:
+            _features_support = None
         out: List[NestedTensor] = []
         pos = []
-        for name, x in xs.items():
-            out.append(x)
-            # position encoding
-            pos.append(self[1](x).to(x.tensors.dtype))
+        out.append(xs)
+        # position encoding
+        pos.append(self[1](xs).to(xs.tensors.dtype))
 
-        return out, pos
+        return out, pos, _features_support
 
 
 def build_backbone(args):

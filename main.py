@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, DistributedSampler
+from datasets.fewshotLoader import roibatchLoader
 
 import datasets
 import util.misc as utils
@@ -43,19 +44,23 @@ def get_args_parser():
                         help="Number of encoding layers in the transformer")
     parser.add_argument('--dec_layers', default=6, type=int,
                         help="Number of decoding layers in the transformer")
+    parser.add_argument('--fuser_layers', default=3, type=int,
+                        help="Number of fuser layers in the transformer")
     parser.add_argument('--dim_feedforward', default=2048, type=int,
                         help="Intermediate size of the feedforward layers in the transformer blocks")
-    parser.add_argument('--hidden_dim', default=384, type=int,
+    parser.add_argument('--hidden_dim', default=288, type=int,
                         help="Size of the embeddings (dimension of the transformer)")
     parser.add_argument('--dropout', default=0.1, type=float,
                         help="Dropout applied in the transformer")
     parser.add_argument('--nheads', default=8, type=int,
                         help="Number of attention heads inside the transformer's attentions")
-    parser.add_argument('--num_frames', default=36, type=int,
+    parser.add_argument('--num_frames', default=32, type=int,
                         help="Number of frames")
-    parser.add_argument('--num_queries', default=360, type=int,
+    parser.add_argument('--num_queries', default=320, type=int,
                         help="Number of query slots")
     parser.add_argument('--pre_norm', action='store_true')
+
+
 
     # * Segmentation
     parser.add_argument('--masks', action='store_true',
@@ -80,11 +85,15 @@ def get_args_parser():
                         help="Relative classification weight of the no-object class")
 
     # dataset parameters
-    parser.add_argument('--dataset_file', default='ytvos')
-    parser.add_argument('--ytvos_path', type=str)
+    parser.add_argument('--dataset', dest='dataset', default='vis', type=str, choices=['vis', 'ovis'],
+                        help='training dataset')
+    parser.add_argument('--len_train', default=10000, type=int, help="for debug, None: original len")
+    parser.add_argument('--len_val', default=500, type=int, help="reducing validation time")
+    parser.add_argument('--len_test', default=None, type=int)
+
     parser.add_argument('--remove_difficult', action='store_true')
 
-    parser.add_argument('--output_dir', default='r101_vistr',
+    parser.add_argument('--output_dir', default='',
                         help='path where to save, empty for no saving')
     parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
@@ -146,16 +155,19 @@ def main(args):
     batch_sampler_train = torch.utils.data.BatchSampler(
         sampler_train, args.batch_size, drop_last=True)
 
-    data_loader_train = DataLoader(dataset_train, batch_sampler=batch_sampler_train,
+
+
+    dataset = roibatchLoader(roidb, crop_size=args.crop_size, len_dataset=args.len_train,
+                             shot=args.shot)
+    data_loader_train = DataLoader(dataset, batch_sampler=batch_sampler_train,
                                    collate_fn=utils.collate_fn, num_workers=args.num_workers)
+
 
     output_dir = Path(args.output_dir)
     
     # load coco pretrained weight
     checkpoint = torch.load(args.pretrained_weights, map_location='cpu')['model']
-    del checkpoint["vistr.class_embed.weight"]
-    del checkpoint["vistr.class_embed.bias"]
-    del checkpoint["vistr.query_embed.weight"]
+
     model.module.load_state_dict(checkpoint,strict=False)
 
     if args.resume:
@@ -200,7 +212,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('VisTR training and evaluation script', parents=[get_args_parser()])
+    parser = argparse.ArgumentParser('training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)

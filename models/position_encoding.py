@@ -1,7 +1,3 @@
-"""
-Various positional encodings for the transformer.
-Modified from DETR (https://github.com/facebookresearch/detr)
-"""
 import math
 import torch
 from torch import nn

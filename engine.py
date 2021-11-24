@@ -19,10 +19,14 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
     metric_logger.add_meter('class_error', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
     header = 'Epoch: [{}]'.format(epoch)
     print_freq = 10
-    for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
+    for iter_num, (samples, supports, targets, _) in tqdm(enumerate(data_loader), total=len(data_loader),desc='train epoch={}/{}'.format(epoch,pytorchgo_args.get_args().epochs)):
         samples = samples.to(device)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-        outputs = model(samples)
+        shot = model.shot
+        if shot > 0:
+            supports = supports.to(device)
+
+        outputs = model(samples, supports)
         loss_dict = criterion(outputs, targets)
         weight_dict = criterion.weight_dict
         losses = sum(loss_dict[k] * weight_dict[k] for k in loss_dict.keys() if k in weight_dict)
