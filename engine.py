@@ -1,7 +1,3 @@
-"""
-Train and eval functions used in main.py
-Modified from DETR (https://github.com/facebookresearch/detr)
-"""
 import math
 import os
 import sys

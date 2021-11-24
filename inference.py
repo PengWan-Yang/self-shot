@@ -1,7 +1,3 @@
-'''
-Inference code for VisTR
-Modified from DETR (https://github.com/facebookresearch/detr)
-'''
 import argparse
 import datetime
 import json
