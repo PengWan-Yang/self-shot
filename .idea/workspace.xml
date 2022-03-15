@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="280e201d-c1d1-488b-9f48-ab29071713df" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/datasets/ovis_val_test_data.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/self_ovis_val_test_data.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/datasets/vis_val_test_data.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/self_vis_val_test_data.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +28,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="285">
-                <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
+              <first_editor relative-caret-position="465">
+                <caret line="31" column="33" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
               </first_editor>
               <second_editor />
             </state>
@@ -57,8 +55,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="233">
+              <caret line="86" column="34" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="34" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -73,7 +71,6 @@
       <find>backbone</find>
       <find>dataset/activitynet13/train_val_frames_3/</find>
       <find>/home/tao/dataset/thumos14/frame_rc3d_fps25</find>
-      <find>dataset</find>
       <find>ava</find>
       <find>DataLoader</find>
       <find>vistr</find>
@@ -83,6 +80,7 @@
       <find>build_transformer</find>
       <find>Transformer(</find>
       <find>decoder(</find>
+      <find>dataset</find>
     </findStrings>
     <replaceStrings>
       <replace>cvpr</replace>
@@ -210,12 +208,12 @@
       <workItem from="1637767879096" duration="6144000" />
       <workItem from="1643177243535" duration="578000" />
       <workItem from="1647283754361" duration="332000" />
-      <workItem from="1647337319650" duration="1329000" />
+      <workItem from="1647337319650" duration="1581000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9258000" />
+    <option name="totallyTimeSpent" value="9510000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -377,16 +375,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/inference.py" />
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/transformer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="649">
@@ -416,11 +404,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="86" column="34" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="285">
-            <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
+          <first_editor relative-caret-position="465">
+            <caret line="31" column="33" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
           </first_editor>
           <second_editor />
         </state>

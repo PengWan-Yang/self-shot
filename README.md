@@ -23,3 +23,11 @@ datasets
 ├── self_vis_train_data
 ├── self_vis_val_test_data
 ```
+
+### Training
+
+Training of the model requires at least 32g memory GPU, we performed the experiment on 3090 card.
+
+```
+python main.py --dataset vis/ovis
+```
